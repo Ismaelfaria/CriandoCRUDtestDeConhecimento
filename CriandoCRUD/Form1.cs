@@ -28,7 +28,7 @@ namespace CriandoCRUD
 
             listContatos.Columns.Add("Id", 30, HorizontalAlignment.Left);
             listContatos.Columns.Add("Nome", 150, HorizontalAlignment.Left);
-            listContatos.Columns.Add("E-mail", 150, HorizontalAlignment.Left);
+            listContatos.Columns.Add("Email", 150, HorizontalAlignment.Left);
             listContatos.Columns.Add("Telefone", 150, HorizontalAlignment.Left);
         }
 
@@ -39,7 +39,7 @@ namespace CriandoCRUD
                 conn = new MySqlConnection(sql);
                 conn.Open();
 
-                string comandInsert = "INSERT INTO contato (nome, email, telefone) " +
+                var comandInsert = "INSERT INTO contato (nome, email, telefone) " +
                     "VALUES " +
                     "('" + txtNome.Text + "', '" + txtEmail.Text + "', '" + txtTelefone.Text + "') ";
 
@@ -47,10 +47,9 @@ namespace CriandoCRUD
 
                 commandInsert.ExecuteReader();
 
-                MessageBox.Show("De certo, contato Salvo!!!");
-
+                MessageBox.Show("Deu certo, contato Adicionado");
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -89,7 +88,6 @@ namespace CriandoCRUD
                     var linhaListContato = new ListViewItem(row);
                     listContatos.Items.Add(linhaListContato);
                 }
-
             }
             catch (Exception ex)
             {
