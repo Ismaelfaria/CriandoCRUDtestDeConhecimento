@@ -15,7 +15,8 @@ namespace CriandoCRUD
     {
         MySqlConnection conn;
         string sql = "datasource=localhost;username=root;password=123456;database=db_agenda";
-
+        
+        
         public Form1()
         {
             InitializeComponent();
@@ -34,20 +35,28 @@ namespace CriandoCRUD
 
         private void Salvar_Click(object sender, EventArgs e)
         {
+            
+            
             try
             {
                 conn = new MySqlConnection(sql);
                 conn.Open();
+                var commandInsert = new MySqlCommand();
 
-                var comandInsert = "INSERT INTO contato (nome, email, telefone) " +
-                    "VALUES " +
-                    "('" + txtNome.Text + "', '" + txtEmail.Text + "', '" + txtTelefone.Text + "') ";
+                commandInsert.Connection = conn;
 
-                MySqlCommand commandInsert = new MySqlCommand(comandInsert, conn);
+                commandInsert.CommandText = "INSERT INTO contato (nome, email, telefone) " +
+                    " VALUES (@nome, @email, @telefone) ";
 
-                commandInsert.ExecuteReader();
+                commandInsert.Parameters.AddWithValue("@nome", txtNome.Text);
+                commandInsert.Parameters.AddWithValue("@email", txtEmail.Text);
+                commandInsert.Parameters.AddWithValue("@telefone", txtTelefone.Text);
 
-                MessageBox.Show("Deu certo, contato Adicionado");
+                commandInsert.Prepare();
+
+                commandInsert.ExecuteNonQuery();
+
+                MessageBox.Show("Contato inserido com secesso");
             }
             catch(Exception ex)
             {
