@@ -41,20 +41,20 @@ namespace CriandoCRUD
             {
                 conn = new MySqlConnection(sql);
                 conn.Open();
-                var commandInsert = new MySqlCommand();
+                var c = new MySqlCommand();
 
-                commandInsert.Connection = conn;
+                c.Connection = conn;
+                c.CommandText = "INSERT INTO contato (nome, email, telefone) " +
+                    "VALUES (@nome, @email, @telefone)";
 
-                commandInsert.CommandText = "INSERT INTO contato (nome, email, telefone) " +
-                    " VALUES (@nome, @email, @telefone) ";
+                c.Parameters.AddWithValue("@nome", txtNome.Text);
+                c.Parameters.AddWithValue("@email", txtEmail.Text);
+                c.Parameters.AddWithValue("@telefone", txtTelefone.Text);
 
-                commandInsert.Parameters.AddWithValue("@nome", txtNome.Text);
-                commandInsert.Parameters.AddWithValue("@email", txtEmail.Text);
-                commandInsert.Parameters.AddWithValue("@telefone", txtTelefone.Text);
+                c.Prepare();
 
-                commandInsert.Prepare();
-
-                commandInsert.ExecuteNonQuery();
+                c.ExecuteNonQuery();
+              
 
                 MessageBox.Show("Contato inserido com secesso");
             }
