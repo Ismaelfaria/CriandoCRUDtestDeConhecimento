@@ -112,10 +112,12 @@
             // 
             this.listContatos.HideSelection = false;
             this.listContatos.Location = new System.Drawing.Point(145, 59);
+            this.listContatos.MultiSelect = false;
             this.listContatos.Name = "listContatos";
             this.listContatos.Size = new System.Drawing.Size(252, 97);
             this.listContatos.TabIndex = 8;
             this.listContatos.UseCompatibleStateImageBehavior = false;
+            this.listContatos.SelectedIndexChanged += new System.EventHandler(this.listContatos_SelectedIndexChanged);
             // 
             // txtbuscar
             // 

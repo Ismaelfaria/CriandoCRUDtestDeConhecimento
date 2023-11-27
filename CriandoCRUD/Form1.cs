@@ -156,5 +156,17 @@ namespace CriandoCRUD
                 conn.Close();
             }
         }
+
+        private void listContatos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListView.SelectedListViewItemCollection itemDaList = listContatos.SelectedItems;
+
+            foreach (ListViewItem item in itemDaList)
+            {
+                txtNome.Text = item.SubItems[1].Text;
+                txtEmail.Text = item.SubItems[2].Text;
+                txtTelefone.Text = item.SubItems[3].Text;
+            }
+        }
     }
 }
