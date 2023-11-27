@@ -31,12 +31,12 @@ namespace CriandoCRUD
             listContatos.Columns.Add("Nome", 150, HorizontalAlignment.Left);
             listContatos.Columns.Add("Email", 150, HorizontalAlignment.Left);
             listContatos.Columns.Add("Telefone", 150, HorizontalAlignment.Left);
+
+            carregarListContatos();
         }
 
         private void Salvar_Click(object sender, EventArgs e)
         {
-            
-            
             try
             {
                 conn = new MySqlConnection(sql);
@@ -55,8 +55,9 @@ namespace CriandoCRUD
 
                 comandCreate.ExecuteNonQuery();
               
-
                 MessageBox.Show("Contato inserido com secesso");
+
+                carregarListContatos();
             }
             catch(Exception ex)
             {
@@ -75,11 +76,59 @@ namespace CriandoCRUD
                 conn = new MySqlConnection(sql);
                 conn.Open();
 
-                var query = "'%"+txtbuscar.Text+"%'";
-                var comandSelect = "SELECT * FROM contato WHERE nome LIKE " + query +
-                    " OR email LIKE " + query;
+                var commandSelect = new MySqlCommand();
 
-                MySqlCommand commandSelect = new MySqlCommand(comandSelect, conn);
+                commandSelect.Connection = conn;
+
+                commandSelect.CommandText = "SELECT * FROM contato WHERE nome LIKE @q OR email LIKE @q ";
+
+                commandSelect.Parameters.AddWithValue("@q", "%"+txtbuscar.Text+"%");
+
+                commandSelect.Prepare();
+
+                MySqlDataReader reader = commandSelect.ExecuteReader();
+
+                listContatos.Items.Clear();
+
+                while (reader.Read())
+                {
+                    string[] row =
+                    {
+                        reader.GetString(0),
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                    };
+
+                    var linhaListContato = new ListViewItem(row);
+                    listContatos.Items.Add(linhaListContato);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        private void carregarListContatos()
+        {
+            try
+            {
+                conn = new MySqlConnection(sql);
+                conn.Open();
+
+                var commandSelect = new MySqlCommand();
+
+                commandSelect.Connection = conn;
+
+                commandSelect.CommandText = "SELECT * FROM contato ORDER BY id DESC ";
+
+                commandSelect.Prepare();
+
                 MySqlDataReader reader = commandSelect.ExecuteReader();
 
                 listContatos.Items.Clear();
