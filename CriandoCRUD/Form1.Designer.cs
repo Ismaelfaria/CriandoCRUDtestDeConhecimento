@@ -39,6 +39,7 @@
             this.listContatos = new System.Windows.Forms.ListView();
             this.txtbuscar = new System.Windows.Forms.TextBox();
             this.BuscarBut = new System.Windows.Forms.Button();
+            this.ClearFormulary = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -91,13 +92,13 @@
             // 
             // Salvar
             // 
-            this.Salvar.Location = new System.Drawing.Point(57, 164);
+            this.Salvar.Location = new System.Drawing.Point(67, 153);
             this.Salvar.Name = "Salvar";
             this.Salvar.Size = new System.Drawing.Size(49, 20);
             this.Salvar.TabIndex = 6;
             this.Salvar.Text = "Salvar";
             this.Salvar.UseVisualStyleBackColor = true;
-            this.Salvar.Click += new System.EventHandler(this.Salvar_Click);
+            this.Salvar.Click += new System.EventHandler(this.CreateAndUpdate_Click);
             // 
             // label4
             // 
@@ -134,13 +135,24 @@
             this.BuscarBut.TabIndex = 10;
             this.BuscarBut.Text = "Buscar";
             this.BuscarBut.UseVisualStyleBackColor = true;
-            this.BuscarBut.Click += new System.EventHandler(this.Buscar_Click);
+            this.BuscarBut.Click += new System.EventHandler(this.Read_Click);
+            // 
+            // ClearFormulary
+            // 
+            this.ClearFormulary.Location = new System.Drawing.Point(16, 153);
+            this.ClearFormulary.Name = "ClearFormulary";
+            this.ClearFormulary.Size = new System.Drawing.Size(46, 20);
+            this.ClearFormulary.TabIndex = 11;
+            this.ClearFormulary.Text = "Limpar";
+            this.ClearFormulary.UseVisualStyleBackColor = true;
+            this.ClearFormulary.Click += new System.EventHandler(this.ClearFormulary_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(409, 193);
+            this.Controls.Add(this.ClearFormulary);
             this.Controls.Add(this.BuscarBut);
             this.Controls.Add(this.txtbuscar);
             this.Controls.Add(this.listContatos);
@@ -172,6 +184,7 @@
         private System.Windows.Forms.ListView listContatos;
         private System.Windows.Forms.TextBox txtbuscar;
         private System.Windows.Forms.Button BuscarBut;
+        private System.Windows.Forms.Button ClearFormulary;
     }
 }
 

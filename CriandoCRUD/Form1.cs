@@ -15,8 +15,8 @@ namespace CriandoCRUD
     {
         MySqlConnection conn;
         string sql = "datasource=localhost;username=root;password=123456;database=db_agenda";
-        
-        
+        private int? idSelecionado = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -32,10 +32,10 @@ namespace CriandoCRUD
             listContatos.Columns.Add("Email", 150, HorizontalAlignment.Left);
             listContatos.Columns.Add("Telefone", 150, HorizontalAlignment.Left);
 
-            carregarListContatos();
+            loadListContatos();
         }
 
-        private void Salvar_Click(object sender, EventArgs e)
+        private void CreateAndUpdate_Click(object sender, EventArgs e)
         {
             try
             {
@@ -45,21 +45,37 @@ namespace CriandoCRUD
 
                 comandCreate.Connection = conn;
 
-                comandCreate.CommandText = "INSERT INTO contato (nome, email, telefone) "+
-                    "VALUE (@n, @e, @t) ";
-                comandCreate.Parameters.AddWithValue("@n", txtNome.Text );
-                comandCreate.Parameters.AddWithValue("@e", txtEmail.Text);
-                comandCreate.Parameters.AddWithValue("@t", txtTelefone.Text);
+                if (idSelecionado == null)
+                {
+                    comandCreate.CommandText = "INSERT INTO contato (nome, email, telefone) " +
+                                        "VALUE (@n, @e, @t) ";
+                    comandCreate.Parameters.AddWithValue("@n", txtNome.Text);
+                    comandCreate.Parameters.AddWithValue("@e", txtEmail.Text);
+                    comandCreate.Parameters.AddWithValue("@t", txtTelefone.Text);
+                
+                    MessageBox.Show("Contato inserido com secesso");
+                }
+                else
+                {
+                    comandCreate.CommandText = "UPDATE contato SET " +
+                                      "nome=@n, email=@e, telefone=@t " +
+                                      "WHERE id=@id ";
+                    comandCreate.Parameters.AddWithValue("@n", txtNome.Text);
+                    comandCreate.Parameters.AddWithValue("@e", txtEmail.Text);
+                    comandCreate.Parameters.AddWithValue("@t", txtTelefone.Text);
+                    comandCreate.Parameters.AddWithValue("@id", idSelecionado);
 
-                comandCreate.Prepare();
+                    MessageBox.Show("Contato atualizado com secesso");
+                }
+
 
                 comandCreate.ExecuteNonQuery();
-              
-                MessageBox.Show("Contato inserido com secesso");
 
-                carregarListContatos();
+                
+
+                loadListContatos();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -69,7 +85,7 @@ namespace CriandoCRUD
             }
         }
 
-        private void Buscar_Click(object sender, EventArgs e)
+        private void Read_Click(object sender, EventArgs e)
         {
             try
             {
@@ -82,7 +98,7 @@ namespace CriandoCRUD
 
                 commandSelect.CommandText = "SELECT * FROM contato WHERE nome LIKE @q OR email LIKE @q ";
 
-                commandSelect.Parameters.AddWithValue("@q", "%"+txtbuscar.Text+"%");
+                commandSelect.Parameters.AddWithValue("@q", "%" + txtbuscar.Text + "%");
 
                 commandSelect.Prepare();
 
@@ -114,7 +130,7 @@ namespace CriandoCRUD
             }
         }
 
-        private void carregarListContatos()
+        private void loadListContatos()
         {
             try
             {
@@ -146,6 +162,8 @@ namespace CriandoCRUD
                     var linhaListContato = new ListViewItem(row);
                     listContatos.Items.Add(linhaListContato);
                 }
+
+                ClearFormulary.Visible = true;
             }
             catch (Exception ex)
             {
@@ -163,10 +181,31 @@ namespace CriandoCRUD
 
             foreach (ListViewItem item in itemDaList)
             {
+                idSelecionado = Convert.ToInt32(item.SubItems[0].Text);
+
                 txtNome.Text = item.SubItems[1].Text;
                 txtEmail.Text = item.SubItems[2].Text;
                 txtTelefone.Text = item.SubItems[3].Text;
+
+                ClearFormulary.Visible = true;
             }
+        }
+
+        private void ClearFormulary_Click(object sender, EventArgs e)
+        {
+            idSelecionado = null;
+
+            txtNome.Text = String.Empty;
+            txtEmail.Text = String.Empty;
+            txtTelefone.Text = String.Empty;
+
+            mouseOnTheForm();
+        }
+
+        private void mouseOnTheForm()
+        {
+            txtNome.Focus();
+            ClearFormulary.Visible = false;
         }
     }
 }
