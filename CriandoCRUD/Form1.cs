@@ -191,21 +191,86 @@ namespace CriandoCRUD
             }
         }
 
-        private void ClearFormulary_Click(object sender, EventArgs e)
+        private void ClearFormularyAndMouse_Click(object sender, EventArgs e)
+        {
+            cleanFormulary();
+            mouseOnTheForm();
+        }
+
+        private void cleanFormulary()
         {
             idSelecionado = null;
 
             txtNome.Text = String.Empty;
             txtEmail.Text = String.Empty;
             txtTelefone.Text = String.Empty;
-
-            mouseOnTheForm();
         }
 
         private void mouseOnTheForm()
         {
             txtNome.Focus();
             ClearFormulary.Visible = false;
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            DeleteContact();
+        }
+
+        private void DeleteContact()
+        {
+            try
+            {
+                DialogResult conf = MessageBox.Show("Tem certeza que deseja excluir o registro?",
+                                                    "Ops, tem certeza?",
+                                                    MessageBoxButtons.YesNo,
+                                                    MessageBoxIcon.Warning);
+
+                if (conf == DialogResult.Yes)
+                {
+                    conn = new MySqlConnection(sql);
+                    conn.Open();
+
+                    MySqlCommand cmd = new MySqlCommand();
+
+                    cmd.Connection = conn;
+
+                    cmd.CommandText = "DELETE FROM contato WHERE id=@id ";
+                    cmd.Parameters.AddWithValue("@id", idSelecionado);
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+
+
+                    MessageBox.Show("Contato Excluído com Sucesso!",
+                                    "Sucesso!", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+
+                    loadListContatos();
+
+                    cleanFormulary();
+                }
+
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Erro " + ex.Number + " ocorreu: " + ex.Message,
+                               "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocorreu: " + ex.Message,
+                                "Erro", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        private void Delete_Click(object sender, EventArgs e)
+        {
+            DeleteContact();
         }
     }
 }

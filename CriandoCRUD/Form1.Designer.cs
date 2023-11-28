@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -37,9 +38,13 @@
             this.Salvar = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.listContatos = new System.Windows.Forms.ListView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.txtbuscar = new System.Windows.Forms.TextBox();
             this.BuscarBut = new System.Windows.Forms.Button();
             this.ClearFormulary = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -111,6 +116,7 @@
             // 
             // listContatos
             // 
+            this.listContatos.ContextMenuStrip = this.contextMenuStrip1;
             this.listContatos.HideSelection = false;
             this.listContatos.Location = new System.Drawing.Point(145, 59);
             this.listContatos.MultiSelect = false;
@@ -119,6 +125,20 @@
             this.listContatos.TabIndex = 8;
             this.listContatos.UseCompatibleStateImageBehavior = false;
             this.listContatos.SelectedIndexChanged += new System.EventHandler(this.listContatos_SelectedIndexChanged);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(159, 26);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
+            this.toolStripMenuItem1.Text = "Excluir contatos";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // txtbuscar
             // 
@@ -145,13 +165,24 @@
             this.ClearFormulary.TabIndex = 11;
             this.ClearFormulary.Text = "Limpar";
             this.ClearFormulary.UseVisualStyleBackColor = true;
-            this.ClearFormulary.Click += new System.EventHandler(this.ClearFormulary_Click);
+            this.ClearFormulary.Click += new System.EventHandler(this.ClearFormularyAndMouse_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(237, 162);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "Deletar";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Delete_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(409, 193);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.ClearFormulary);
             this.Controls.Add(this.BuscarBut);
             this.Controls.Add(this.txtbuscar);
@@ -166,6 +197,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -185,6 +217,9 @@
         private System.Windows.Forms.TextBox txtbuscar;
         private System.Windows.Forms.Button BuscarBut;
         private System.Windows.Forms.Button ClearFormulary;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.Button button1;
     }
 }
 
