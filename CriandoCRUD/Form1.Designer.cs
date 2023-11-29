@@ -124,7 +124,7 @@
             this.listContatos.Size = new System.Drawing.Size(252, 97);
             this.listContatos.TabIndex = 8;
             this.listContatos.UseCompatibleStateImageBehavior = false;
-            this.listContatos.SelectedIndexChanged += new System.EventHandler(this.listContatos_SelectedIndexChanged);
+            this.listContatos.SelectedIndexChanged += new System.EventHandler(this.ListContatos_SelectedIndexChanged);
             // 
             // contextMenuStrip1
             // 

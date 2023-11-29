@@ -16,7 +16,7 @@ namespace CriandoCRUD
         MySqlConnection conn;
         string sql = "datasource=localhost;username=root;password=123456;database=db_agenda";
         private int? idSelecionado = null;
-        
+
         public Form1()
         {
             InitializeComponent();
@@ -32,10 +32,14 @@ namespace CriandoCRUD
             listContatos.Columns.Add("Email", 150, HorizontalAlignment.Left);
             listContatos.Columns.Add("Telefone", 150, HorizontalAlignment.Left);
 
-            loadListContatos();
+            LoadListContatos();
 
             DeleteItem.Visible = false;
         }
+        /// <summary>
+        /// Realiza uma operação Create e Update, 
+        /// o Update é realizado caso alguma linha do meu listView seja selecionada.
+        /// </summary>
         private void CreateAndUpdate_Click(object sender, EventArgs e)
         {
             if (Validation.valid(txtNome.Text, txtEmail.Text, txtTelefone.Text) == true)
@@ -74,11 +78,11 @@ namespace CriandoCRUD
 
                     comandCreateAndUpdate.ExecuteNonQuery();
 
-                    loadListContatos();
+                    LoadListContatos();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, "Atenção", MessageBoxButtons.OK);
                 }
                 finally
                 {
@@ -87,9 +91,12 @@ namespace CriandoCRUD
             }
             else
             {
-                MessageBox.Show("Campo/s invalidos","Atenção", MessageBoxButtons.OK);
+                MessageBox.Show("Campo/s invalidos", "Atenção", MessageBoxButtons.OK);
             }
         }
+        /// <summary>
+        /// Realiza uma operação que busca registros no meu Banco de dados, podendo ser pelo nome ou email.
+        /// </summary>
         private void Read_Click(object sender, EventArgs e)
         {
             try
@@ -127,29 +134,32 @@ namespace CriandoCRUD
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Atenção", MessageBoxButtons.OK);
             }
             finally
             {
                 conn.Close();
             }
         }
-        private void loadListContatos()
+        /// <summary>
+        /// Carrega os registros do Banco de dados, atualizando em tempo de execução, Ordenando pelo id de forma decrescente.
+        /// </summary>
+        private void LoadListContatos()
         {
             try
             {
                 conn = new MySqlConnection(sql);
                 conn.Open();
 
-                var commandSelect = new MySqlCommand();
+                var commandLoad = new MySqlCommand();
 
-                commandSelect.Connection = conn;
+                commandLoad.Connection = conn;
 
-                commandSelect.CommandText = "SELECT * FROM contato ORDER BY id DESC ";
+                commandLoad.CommandText = "SELECT * FROM contato ORDER BY id DESC ";
 
-                commandSelect.Prepare();
+                commandLoad.Prepare();
 
-                MySqlDataReader reader = commandSelect.ExecuteReader();
+                MySqlDataReader reader = commandLoad.ExecuteReader();
 
                 listContatos.Items.Clear();
 
@@ -171,58 +181,104 @@ namespace CriandoCRUD
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Atenção", MessageBoxButtons.OK);
             }
             finally
             {
                 conn.Close();
             }
         }
-        private void listContatos_SelectedIndexChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Método para pegar os valores de um item(linha) da minha listview e atribuíndo eles aos meus campos TextBox.
+        /// </summary>
+        private void ListContatos_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListView.SelectedListViewItemCollection itemDaList = listContatos.SelectedItems;
-
-            foreach (ListViewItem item in itemDaList)
+            try
             {
-                idSelecionado = Convert.ToInt32(item.SubItems[0].Text);
+                ListView.SelectedListViewItemCollection itemDaList = listContatos.SelectedItems;
 
-                txtNome.Text = item.SubItems[1].Text;
-                txtEmail.Text = item.SubItems[2].Text;
-                txtTelefone.Text = item.SubItems[3].Text;
+                foreach (ListViewItem item in itemDaList)
+                {
+                    idSelecionado = Convert.ToInt32(item.SubItems[0].Text);
 
-                ClearFormulary.Visible = true;
+                    txtNome.Text = item.SubItems[1].Text;
+                    txtEmail.Text = item.SubItems[2].Text;
+                    txtTelefone.Text = item.SubItems[3].Text;
+
+                    ClearFormulary.Visible = true;
+                }
+                DeleteItem.Visible = true;
+
             }
-            DeleteItem.Visible = true;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Atenção", MessageBoxButtons.OK);
+            }
         }
+        /// <summary>
+        /// Realiza a operação de limpar os meus textBox e colocar o meu mouse no campo txtNome.
+        /// </summary>
         private void ClearFormularyAndMouse_Click(object sender, EventArgs e)
         {
-            if(Validation.validcamp(txtNome.Text, txtEmail.Text, txtTelefone.Text) == true) 
-            { 
-            cleanFormulary();
-            mouseOnTheForm();
-            }
-            else
+            try
             {
-                MessageBox.Show("Campos já estão limpos", "Atenção", MessageBoxButtons.OK);
+                if (Validation.validcamp(txtNome.Text, txtEmail.Text, txtTelefone.Text) == true)
+                {
+                    CleanFormulary();
+                    MouseOnTheForm();
+                }
+                else
+                {
+                    MessageBox.Show("Campos já estão limpos", "Atenção", MessageBoxButtons.OK);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Atenção", MessageBoxButtons.OK);
             }
         }
-        private void cleanFormulary()
+        /// <summary>
+        /// Método que limpa os textBox.
+        /// </summary>
+        private void CleanFormulary()
         {
-            idSelecionado = null;
+            try
+            {
+                idSelecionado = null;
 
-            txtNome.Text = String.Empty;
-            txtEmail.Text = String.Empty;
-            txtTelefone.Text = String.Empty;
+                txtNome.Text = String.Empty;
+                txtEmail.Text = String.Empty;
+                txtTelefone.Text = String.Empty;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Atenção", MessageBoxButtons.OK);
+            }
         }
-        private void mouseOnTheForm()
+        /// <summary>
+        /// Método que coloca o cursor do meu mouse no TextBox.
+        /// </summary>
+        private void MouseOnTheForm()
         {
             txtNome.Focus();
             ClearFormulary.Visible = false;
         }
+        /// <summary>
+        /// Realiza uma ação para excluir os contatos selecionando e abrindo o menu com o botão direito.
+        /// </summary>
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            try { 
             DeleteContact();
-        }
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Atenção", MessageBoxButtons.OK);
+            }
+}
+        /// <summary>
+        /// Método para excluir o registro selecionado.
+        /// </summary>
         private void DeleteContact()
         {
             try
@@ -251,9 +307,9 @@ namespace CriandoCRUD
                                     "Sucesso!", MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
 
-                    loadListContatos();
+                    LoadListContatos();
 
-                    cleanFormulary();
+                    CleanFormulary();
                 }
 
             }
@@ -273,12 +329,22 @@ namespace CriandoCRUD
                 conn.Close();
             }
         }
+        /// <summary>
+        /// Botão excluir.
+        /// </summary>
         private void Delete_Click(object sender, EventArgs e)
         {
+            try { 
+
             DeleteContact();
 
             DeleteItem.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Atenção", MessageBoxButtons.OK);
+            }
         }
-      }
     }
+}
 
