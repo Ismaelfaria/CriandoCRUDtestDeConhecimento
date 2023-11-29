@@ -16,7 +16,7 @@ namespace CriandoCRUD
         MySqlConnection conn;
         string sql = "datasource=localhost;username=root;password=123456;database=db_agenda";
         private int? idSelecionado = null;
-
+        
         public Form1()
         {
             InitializeComponent();
@@ -33,58 +33,63 @@ namespace CriandoCRUD
             listContatos.Columns.Add("Telefone", 150, HorizontalAlignment.Left);
 
             loadListContatos();
-        }
 
+            DeleteItem.Visible = false;
+        }
         private void CreateAndUpdate_Click(object sender, EventArgs e)
         {
-            try
+            if (Validation.valid(txtNome.Text, txtEmail.Text, txtTelefone.Text) == true)
             {
-                conn = new MySqlConnection(sql);
-                conn.Open();
-                var comandCreate = new MySqlCommand();
-
-                comandCreate.Connection = conn;
-
-                if (idSelecionado == null)
+                try
                 {
-                    comandCreate.CommandText = "INSERT INTO contato (nome, email, telefone) " +
-                                        "VALUE (@n, @e, @t) ";
-                    comandCreate.Parameters.AddWithValue("@n", txtNome.Text);
-                    comandCreate.Parameters.AddWithValue("@e", txtEmail.Text);
-                    comandCreate.Parameters.AddWithValue("@t", txtTelefone.Text);
-                
-                    MessageBox.Show("Contato inserido com secesso");
+                    conn = new MySqlConnection(sql);
+                    conn.Open();
+
+                    var comandCreateAndUpdate = new MySqlCommand();
+
+                    comandCreateAndUpdate.Connection = conn;
+
+                    if (idSelecionado == null)
+                    {
+                        comandCreateAndUpdate.CommandText = "INSERT INTO contato (nome, email, telefone) " +
+                                            "VALUE (@n, @e, @t) ";
+                        comandCreateAndUpdate.Parameters.AddWithValue("@n", txtNome.Text);
+                        comandCreateAndUpdate.Parameters.AddWithValue("@e", txtEmail.Text);
+                        comandCreateAndUpdate.Parameters.AddWithValue("@t", txtTelefone.Text);
+
+                        MessageBox.Show("Contato inserido com secesso");
+                    }
+                    else
+                    {
+                        comandCreateAndUpdate.CommandText = "UPDATE contato SET " +
+                                          "nome=@n, email=@e, telefone=@t " +
+                                          "WHERE id=@id ";
+                        comandCreateAndUpdate.Parameters.AddWithValue("@n", txtNome.Text);
+                        comandCreateAndUpdate.Parameters.AddWithValue("@e", txtEmail.Text);
+                        comandCreateAndUpdate.Parameters.AddWithValue("@t", txtTelefone.Text);
+                        comandCreateAndUpdate.Parameters.AddWithValue("@id", idSelecionado);
+
+                        MessageBox.Show("Contato atualizado com secesso");
+                    }
+
+                    comandCreateAndUpdate.ExecuteNonQuery();
+
+                    loadListContatos();
                 }
-                else
+                catch (Exception ex)
                 {
-                    comandCreate.CommandText = "UPDATE contato SET " +
-                                      "nome=@n, email=@e, telefone=@t " +
-                                      "WHERE id=@id ";
-                    comandCreate.Parameters.AddWithValue("@n", txtNome.Text);
-                    comandCreate.Parameters.AddWithValue("@e", txtEmail.Text);
-                    comandCreate.Parameters.AddWithValue("@t", txtTelefone.Text);
-                    comandCreate.Parameters.AddWithValue("@id", idSelecionado);
-
-                    MessageBox.Show("Contato atualizado com secesso");
+                    MessageBox.Show(ex.Message);
                 }
-
-
-                comandCreate.ExecuteNonQuery();
-
-                
-
-                loadListContatos();
+                finally
+                {
+                    conn.Close();
+                }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                conn.Close();
+                MessageBox.Show("Campo/s invalidos","Atenção", MessageBoxButtons.OK);
             }
         }
-
         private void Read_Click(object sender, EventArgs e)
         {
             try
@@ -129,7 +134,6 @@ namespace CriandoCRUD
                 conn.Close();
             }
         }
-
         private void loadListContatos()
         {
             try
@@ -174,7 +178,6 @@ namespace CriandoCRUD
                 conn.Close();
             }
         }
-
         private void listContatos_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListView.SelectedListViewItemCollection itemDaList = listContatos.SelectedItems;
@@ -189,14 +192,20 @@ namespace CriandoCRUD
 
                 ClearFormulary.Visible = true;
             }
+            DeleteItem.Visible = true;
         }
-
         private void ClearFormularyAndMouse_Click(object sender, EventArgs e)
         {
+            if(Validation.validcamp(txtNome.Text, txtEmail.Text, txtTelefone.Text) == true) 
+            { 
             cleanFormulary();
             mouseOnTheForm();
+            }
+            else
+            {
+                MessageBox.Show("Campos já estão limpos", "Atenção", MessageBoxButtons.OK);
+            }
         }
-
         private void cleanFormulary()
         {
             idSelecionado = null;
@@ -205,18 +214,15 @@ namespace CriandoCRUD
             txtEmail.Text = String.Empty;
             txtTelefone.Text = String.Empty;
         }
-
         private void mouseOnTheForm()
         {
             txtNome.Focus();
             ClearFormulary.Visible = false;
         }
-
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             DeleteContact();
         }
-
         private void DeleteContact()
         {
             try
@@ -231,14 +237,14 @@ namespace CriandoCRUD
                     conn = new MySqlConnection(sql);
                     conn.Open();
 
-                    MySqlCommand cmd = new MySqlCommand();
+                    MySqlCommand commandDelete = new MySqlCommand();
 
-                    cmd.Connection = conn;
+                    commandDelete.Connection = conn;
 
-                    cmd.CommandText = "DELETE FROM contato WHERE id=@id ";
-                    cmd.Parameters.AddWithValue("@id", idSelecionado);
-                    cmd.Prepare();
-                    cmd.ExecuteNonQuery();
+                    commandDelete.CommandText = "DELETE FROM contato WHERE id=@id ";
+                    commandDelete.Parameters.AddWithValue("@id", idSelecionado);
+                    commandDelete.Prepare();
+                    commandDelete.ExecuteNonQuery();
 
 
                     MessageBox.Show("Contato Excluído com Sucesso!",
@@ -267,10 +273,12 @@ namespace CriandoCRUD
                 conn.Close();
             }
         }
-
         private void Delete_Click(object sender, EventArgs e)
         {
             DeleteContact();
+
+            DeleteItem.Visible = false;
         }
+      }
     }
-}
+
